@@ -1,9 +1,10 @@
 import React from 'react'
 import BackendLayout from '../../../components/layouts/backend/BackendLayout'
 
-const Dashboard = () => {
+const Product = () => {
     return (
         <BackendLayout title="Dashboard">
+            <h1 className="h3 mb-3">Product</h1>
             <div className="row">
                 <div className="col-12">
                     <div className="card">
@@ -19,4 +20,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default Product
