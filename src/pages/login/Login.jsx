@@ -1,14 +1,79 @@
 import React from 'react'
 import AuthLayout from '../../components/layouts/auth/AuthLayout'
-import {Link} from 'react-router-dom'
-
+import {Link, useHistory} from 'react-router-dom'
+import { useState } from 'react'
+import Swal from 'sweetalert2'
 
 const Login = () => {
+
+    // สร้างตัวแปร state 
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+
+
+    // สร้างตัวแปรเปลี่ยนหน้า
+    let history = useHistory()
+
+    //ถ้า login อยู่แล้วให้ไป dashboard
+    if(localStorage.getItem('fullname') != null){
+        history.push('/backend/dashboard')
+    }
+
+    // ฟังค์ชั่นการ  Submit form 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+       if(username === "admin" && password === "1234")
+       {
+            let timerInterval
+            Swal.fire({
+                title: '',
+                html: 'กำลังเข้าสู่ระบบ',
+                timer: 1000,
+                timerProgressBar: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                    timerInterval = setInterval(() => {
+                    const content = Swal.getContent()
+                    if (content) {
+                        const b = content.querySelector('b')
+                        if (b) {
+                        b.textContent = Swal.getTimerLeft()
+                        }
+                    }
+                    }, 100)
+                },
+                willClose: () => {
+                    clearInterval(timerInterval)
+                }
+            }).then((result) => {
+            /* Read more about handling dismissals below */
+            if (result.dismiss === Swal.DismissReason.timer) {
+                history.push("/backend/dashboard")
+
+                // เก็บชื่อผู้ใช้ลง local storage
+                localStorage.setItem('fullname','Nawat Muangkote')
+            }
+            })
+       }
+       else
+       {
+           Swal.fire({
+               title : 'มีข้อผิดพลาด',
+               text : 'ข้อมูลเข้าระบบไม่ถูกต้อง',
+                icon: 'error',
+                confirmButtonText: 'ลองใหม่อีกครั้ง',
+                allowOutsideClick: false,
+                allowEscapeKey: true
+           })
+       }
+    }
+
     return (
         <div>
-            <AuthLayout>
-            <form className="card p-4 col-md-4 my-form">
-                
+            <AuthLayout title="Login">
+            <form className="card p-4 col-md-4 my-form" onSubmit={handleSubmit}>
+            
                 <h3 className="text-center mb-4">เข้าสู่ระบบ</h3>
                 
                 <div className="mb-3 row">
@@ -18,6 +83,8 @@ const Login = () => {
                         type="text"
                         className="form-control"
                         name="username"
+                        onChange={e => setUsername(e.target.value)}
+                        value={username}
                         required
                     />
                     </div>
@@ -30,6 +97,8 @@ const Login = () => {
                         type="password"
                         className="form-control"
                         name="password"
+                        onChange={e => setPassword(e.target.value)}
+                        value={password}
                         required
                     />
                     </div>
